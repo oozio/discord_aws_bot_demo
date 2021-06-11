@@ -1,0 +1,5 @@
+# need for discord integration
+requests
+pynacl
+
+# other dependencies
