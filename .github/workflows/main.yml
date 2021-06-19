@@ -40,7 +40,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    - name: Run tests with pytest
+    - name: Publish slash commands to Discord
       env: 
         APPLICATION_ID: ${{ secrets.APPLICATION_ID }}
         TEST_SERVERS: ${{ secrets.TEST_SERVERS }}
