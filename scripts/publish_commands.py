@@ -68,7 +68,7 @@ def run():
             try:
                 delete_command(f"{guild_url}/{command['id']}")
             except Exception as e:
-                raise f"{e}, {command}"
+                return f"{e}, {command}"
             
     # publish new commands
     commands = get_json(BUCKET, KEY)
