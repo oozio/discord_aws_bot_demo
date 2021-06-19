@@ -65,8 +65,11 @@ def run():
     # delete all existing commands to reset to clean state
     for guild_url in guild_urls:
         for command in get_all_commands(guild_url):
-            delete_command(f"{guild_url}/{command['id']}")
-
+            try:
+                delete_command(f"{guild_url}/{command['id']}")
+            except Exception as e:
+                raise f"{e}, {command}"
+            
     # publish new commands
     commands = get_json(BUCKET, KEY)
     for url in guild_urls:
