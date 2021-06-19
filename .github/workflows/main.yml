@@ -46,4 +46,6 @@ jobs:
         TEST_SERVERS: ${{ secrets.TEST_SERVERS }}
         BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
         AWS_BUCKET: ${{ secrets.AWS_BUCKET }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: python scripts/publish_commands.py
