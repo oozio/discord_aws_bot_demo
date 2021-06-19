@@ -51,4 +51,7 @@ jobs:
         AWS_REGION: ${{ secrets.AWS_REGION }}
       run: |
           output=$(python scripts/publish_commands.py)
-          echo "$output"
+          echo "::set-output name=publishStatus::$output"
+      id: step1
+    - name: Print status
+      run: echo "${{ steps.step1.outputs.publishStatus }}"
