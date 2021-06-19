@@ -59,24 +59,27 @@ def delete_command(url):
     r = requests.delete(url, headers=HEADERS)
     print(r.text)
     
-    
-def lambda_handler(event, context):
+
+def run():
     # use guild_urls to test, since global changes take effect after a delay
-    
     # delete all existing commands to reset to clean state
     for guild_url in guild_urls:
         for command in get_all_commands(guild_url):
             delete_command(f"{guild_url}/{command['id']}")
-        
+
     # publish new commands
     commands = get_json(BUCKET, KEY)
     for url in guild_urls:
         for command in commands:
             publish_command(url, command)
-            
+
     # uncomment to publish globally
     # for command in commands:
     #     publish_command(global_url, command)
       
 
     return f"{len(commands)} published: commands"
+
+    
+if __name__ == "__main__":
+    return run()
