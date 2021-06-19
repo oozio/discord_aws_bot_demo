@@ -16,12 +16,12 @@ jobs:
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_DEFAULT_REGION: 'us-east-2'
+        AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
     - name: Upload commands to S3 
       uses: tpaschalis/s3-sync-action@master
       env:
        FILE: ./commands/commands.json
-       AWS_REGION: 'us-east-2'
+       AWS_REGION: ${{ secrets.AWS_REGION }}
        AWS_S3_BUCKET: ${{ secrets.AWS_BUCKET }}
        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -31,7 +31,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Publish commands
-      uses: zzzze/webhook-trigger@master
+      uses: actions/checkout@master
+    - name: Install Python 3
+      uses: actions/setup-python@v1
       with:
-        data: "{\"event_type\":\"build\"}"
-        webhook_url: ${{ secrets.BUILD_COMMANDS_ENDPOINT }}
+        python-version: 3.6
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Run tests with pytest
+      run: scripts/publish_commands.py
