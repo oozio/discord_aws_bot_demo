@@ -52,8 +52,10 @@ def publish_command(url, commands):
 
     
 def get_all_commands(url):
-    return requests.get(url, headers=HEADERS).json()
-  
+    existing_commands = requests.get(url, headers=HEADERS).json()
+    if not existing_commands:
+        return []
+    
     
 def delete_command(url):
     r = requests.delete(url, headers=HEADERS)
@@ -62,13 +64,10 @@ def delete_command(url):
 
 def run():
     # use guild_urls to test, since global changes take effect after a delay
-    # delete all existing commands to reset to clean state
-    for guild_url in guild_urls:
-        for command in get_all_commands(guild_url):
-            try:
-                delete_command(f"{guild_url}/{command['id']}")
-            except Exception as e:
-                return f"{e}, {command}"
+    # optional: delete all existing commands to reset to clean state
+    # for guild_url in guild_urls:
+    #    for command in get_all_commands(guild_url):
+    #        delete_command(f"{guild_url}/{command['id']}")
             
     # publish new commands
     commands = get_json(BUCKET, KEY)
