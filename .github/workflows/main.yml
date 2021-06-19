@@ -46,4 +46,4 @@ jobs:
         TEST_SERVERS: ${{ secrets.TEST_SERVERS }}
         BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
         AWS_BUCKET: ${{ secrets.AWS_BUCKET }}
-      run: scripts/publish_commands.py
+      run: python scripts/publish_commands.py
