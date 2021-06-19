@@ -80,7 +80,7 @@ def run():
     #     publish_command(global_url, command)
       
 
-    return f"{len(commands)} published: commands"
+    print(f"{len(commands)} published: commands")
 
     
 if __name__ == "__main__":
