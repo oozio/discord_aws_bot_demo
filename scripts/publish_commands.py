@@ -10,7 +10,7 @@ ssm = boto3.client('ssm', region_name='us-east-2')
 
 # discord info so we know where to publish the slash commands
 APPLICATION_ID = os.environ.get("APPLICATION_ID")
-TEST_SERVER = json.loads(os.environ.get("TEST_SERVERS"))
+TEST_SERVERS = json.loads(os.environ.get("TEST_SERVERS"))
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 HEADERS = {"Authorization": f"Bot {BOT_TOKEN}"}
