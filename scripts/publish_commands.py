@@ -1,21 +1,28 @@
 import boto3
 import json
+import os
 import requests
 
 
 from time import sleep
-s3 = boto3.client("s3")
-ssm = boto3.client('ssm', region_name='us-east-2')
+
+AWS_ACCESS_KEY_ID: os.environ.get("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY: os.environ.get("AWS_SECRET_ACCESS_KEY")
+AWS_REGION = os.environ.get("AWS_REGION")
+s3 = boto3.client("s3",             
+                  aws_access_key_id=AWS_ACCESS_KEY_ID, 
+                  aws_secret_access_key=AWS_SECRET_ACCESS_KEY, 
+                  region_name=AWS_REGION)
 
 # discord info so we know where to publish the slash commands
-APPLICATION_ID = ssm.get_parameter(Name="/discord/application_id", WithDecryption=True)['Parameter']['Value']
-TEST_SERVERS = ssm.get_parameter(Name="/discord/test_servers", WithDecryption=True)['Parameter']['Value']
+APPLICATION_ID = os.environ.get("APPLICATION_ID")
+TEST_SERVERS = json.loads(os.environ.get("TEST_SERVERS"))
 
-BOT_TOKEN = ssm.get_parameter(Name="/discord/bot_token", WithDecryption=True)['Parameter']['Value']
+BOT_TOKEN = os.environ.get("BOT_TOKEN")
 HEADERS = {"Authorization": f"Bot {BOT_TOKEN}"}
 
 # where is the file with the commands stored in s3?
-BUCKET = ssm.get_parameter(Name="/discord/commands_s3", WithDecryption=True)['Parameter']['Value']
+BUCKET = os.environ.get("AWS_BUCKET")
 KEY = 'commands.json'
 
 # form the APi endpoints: https://discord.com/developers/docs/interactions/slash-commands#registering-a-command
@@ -24,8 +31,11 @@ guild_urls = [f"https://discord.com/api/v8/applications/{APPLICATION_ID}/guilds/
 
 
 def get_json(bucket, key):
-    result = s3.get_object(Bucket=bucket, Key=key) 
-    text = result["Body"].read().decode()
+    result = s3.get_object(Bucket=bucket, Key=key)
+    try:
+        text = result["Body"].read().decode()
+    except Exception as e:
+        print(f"Err: No file found at {bucket}/{key}: {e}")
     return json.loads(text)
 
 
@@ -34,11 +44,11 @@ def publish_command(url, commands):
     if r.status_code != 200:
         # pinging the endpoint too frequently causes it to fail; wait and retry
         sleep(20)
-        print("retrying once")
+        print(f"Post to {url} failed; retrying once")
         r = requests.post(url, headers=HEADERS, json=commands)
         
     # debug print
-    print(r.text)
+    print(f"Response from {url}: {r.text}")
 
     
 def get_all_commands(url):
