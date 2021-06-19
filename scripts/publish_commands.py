@@ -78,3 +78,5 @@ def lambda_handler(event, context):
     # for command in commands:
     #     publish_command(global_url, command)
       
+
+    return f"{len(commands)} published: commands"
