@@ -3,3 +3,4 @@ requests
 pynacl
 
 # other dependencies
+boto3
